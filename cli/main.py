@@ -9,7 +9,9 @@ def main():
 
     analyze = sub.add_parser("analyze")
     analyze.add_argument("path")
-    analyze.add_argument("--output")
+    analyze.add_argument("--output", help="Write Markdown report")
+    analyze.add_argument("--summary", action="store_true", help="Show ranked project summary")
+    analyze.add_argument("--json", help="Write JSON output")
     analyze.set_defaults(func=analyze_command)
 
     explain = sub.add_parser("explain")
