@@ -2,7 +2,7 @@ import json
 import sys
 from pathlib import Path
 
-from axiom.orchestration.pipeline import run_analysis, run_explanation
+from axiom.orchestration.pipeline import run_analysis, run_explanation, run_html_report
 from axiom.output.json_writer import write_json
 from axiom.output.markdown_writer import write_markdown
 from axiom.output.summary_writer import summarize_project
@@ -26,7 +26,12 @@ def analyze_command(args) -> None:
         print("No Python files found. Nothing to analyze.")
         return
 
-    # Always generate explanations
+    # --html: generate visual HTML report
+    if args.html:
+        run_html_report(project, args.html)
+        print(f"HTML report written to: {args.html}")
+
+    # Always generate explanations for markdown/text output
     explanations = run_explanation(project)
 
     # --output: write markdown report
@@ -34,7 +39,7 @@ def analyze_command(args) -> None:
         write_markdown(explanations, args.output)
         print(f"Markdown report written to: {args.output}")
 
-    # --summary: print or write summary (does NOT suppress the markdown report)
+    # --summary: print or write summary
     if args.summary:
         summary = summarize_project(project)
         if args.json:
@@ -45,14 +50,14 @@ def analyze_command(args) -> None:
         return
 
     # Default: print a brief result to stdout when no file output was requested
-    if not args.output:
+    if not args.output and not args.html:
         smelly = sum(1 for f in project.files.values() if f.smells)
         top = sorted(project.files.values(), key=lambda f: f.complexity, reverse=True)[:3]
         print("Top files by complexity:")
         for f in top:
             print(f"  {Path(f.path).name:40s}  complexity={f.complexity}")
         if smelly:
-            print(f"\n{smelly} file(s) have code smells. Run with --output report.md for details.")
+            print(f"\n{smelly} file(s) have code smells. Run with --html report.html for a full visual report.")
         else:
             print("\nNo code smells detected.")
-        print("\nRun with --output <file.md> to write a full report.")
+        print("\nRun with --html <file.html> for a full visual report.")

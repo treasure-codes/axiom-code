@@ -13,6 +13,11 @@ axiom_artifacts/
 .pytest_cache/
 .coverage
 htmlcov/
+.claude/
 *.md
 !README.md
 !docs/*.md
+# generated reports
+*_report.html
+*_report.md
+*_report.json

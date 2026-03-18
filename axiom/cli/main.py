@@ -23,6 +23,7 @@ def main() -> None:
     # --- analyze ---
     analyze = sub.add_parser("analyze", help="Analyze a project directory")
     analyze.add_argument("path", help="Path to the project root")
+    analyze.add_argument("--html", metavar="FILE", help="Write visual HTML report to FILE")
     analyze.add_argument("--output", metavar="FILE", help="Write Markdown report to FILE")
     analyze.add_argument("--summary", action="store_true", help="Print a ranked project summary")
     analyze.add_argument("--json", metavar="FILE", help="Write JSON summary to FILE (requires --summary)")
